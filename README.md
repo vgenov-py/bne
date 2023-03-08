@@ -16,3 +16,7 @@
 5. Consulta por valor en tag
 6. Filtrar por ausencia de etiqueta
 7. Funcionamiento correcto en diferentes tipos de registros (persona, geografico)
+
+### 8-3-2023
+
+1. Selección de ficheros
