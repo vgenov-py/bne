@@ -5,7 +5,7 @@
 1. Fichero mrc para extraer datos (menor peso a mrc-xml)
 2. Conversión unitaria de registro a diccionario
 3. ? Guardar datos en colección de datos asociativa: **set**, **dict** ordenada: **tuple**
-4. Las etiquetas con coincidencia (024) serán almacenadas de la siguiente manera -> <tag>:[1,2...]
+4. Las etiquetas con coincidencia (024) serán almacenadas de la siguiente manera -> \<tag>:[1,2...]
 
 ### 7-3-2023
 

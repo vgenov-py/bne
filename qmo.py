@@ -1,6 +1,7 @@
 import re
 import csv
 from utils import csv_mapper
+
 class QMO:
     def __init__(self, data: tuple) -> None:
         self.data = data
@@ -26,15 +27,11 @@ class QMO:
         return tuple(result)
 
     def export_csv(self, csv_name: str, data: tuple):
-        HEADERS = "id BNE;otros códigos de identificación;coordenadas;cdu;encabezamiento geográfico;término geográfico no aceptado;entidades relacionadas;término de materia relacionado;término geográfico relacionado;término geográfico relacionado genérico;término geográfico relacionado específico;nota general;fuente de información;información encontrada;enlace a fuente;otros datos biográficos o históricos;nota de uso;geográfico subencabezamiento;obras relacionadas"
-        HEADERS = HEADERS.split(";")
+        HEADERS = ['id BNE', 'otros códigos de identificación', 'coordenadas', 'cdu', 'encabezamiento geográfico', 'término geográfico no aceptado', 'entidades relacionadas', 'término de materia relacionado', 'término geográfico relacionado', 'término geográfico relacionado genérico', 'término geográfico relacionado específico', 'nota general', 'fuente de información', 'información encontrada', 'enlace a fuente', 'otros datos biográficos o históricos', 'nota de uso', 'geográfico subencabezamiento', 'obras relacionadas']
         with open(f"{csv_name}.csv", "w", encoding="utf-8") as file:
             def write_lines(data):
-                to_write = []
                 for record in data:
-                    a = csv_mapper(record)
-                    to_write.append(a)
-                return to_write
+                    yield csv_mapper(record)
             csv_writter = csv.writer(file, delimiter=";")
             csv_writter.writerow(HEADERS)
             b = write_lines(data)

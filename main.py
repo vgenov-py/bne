@@ -1,27 +1,40 @@
 import os
-from marc_reader import test
-import random
-# import xmltodict
-# with open('sub_geo.xml', 'r', encoding='utf-8') as file:
-#     my_xml = file.read()
-
-# data = xmltodict.parse(my_xml)
-# print(data)
-
+from marc_reader import parse_file
+RECORDS_DIR = f"{os.getcwd()}/records"
+def clear():
+    try:
+        os.system("clear")
+    except:
+        os.system("cls")
+def menu():
+    clear()
+    options = ["Cargar ficheros/s", "MARC Query", "Consulta general", "Salir"]
+    for i, option in enumerate(options[0:-1]):
+        print(f"{i+1}. {option}")
+def sub_menu(options: list) -> None:
+    for i, option in enumerate(options):
+        print(f"{i+1}. {option}")
+def list_files(dir: str) -> None:
+    files = os.listdir(dir)
+    sub_menu(files)
+    return files
 user = ""
 while user != "q":
-    os.system("clear")
-    print("1. MARC Query")
-    print("2. Consulta general")
-    print("Q. Salir")
-    print(f"{test.length} REGISTROS")
+    menu()
 
     if user == "1":
-        print("1. Filtrar por tag")
-        print("2. Filtrar por valor")
+        pass
+        records = list_files(RECORDS_DIR)
+        user = int(input(": ")) -1
+        test = parse_file(f"{os.getcwd()}/records/{records[user]}")
+        clear()
+        print(f"{records[user]} cargado correctamente")
+        input()
+    elif user == "2":
+        sub_menu(("Filtrar por tag", "Filtrar por valor"))
         user = input(": ")
         if user == "1":
-            os.system("clear")
+            clear()
             tag = input("tag: ")
             result = test.without_tag(tag)
             print(len(result))

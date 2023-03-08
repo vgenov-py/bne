@@ -1,78 +1,40 @@
 import re
-"(?<=\.\d{3}\..)\|"
+
 re_tag = "\.\d{3}\.\W{1,3}\||\.\d{3}\.\W{1}\d{1,2}\W{1}\||\.\d{3}\.\d{1,2}\W{1,2}\|"
 re_dollar = "\|.{1}"
-n1 = '''.000. |az n 0cza
-.001. |aXX460733
-.003. |aSpMaBN
-.005. |a20191028142628.2
-.008. |a031022 n anznnbabn          |a ana
-.010.   |aXX460733
-.016.   |aBNE20032766540
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.024. 7 |ahttp://viaf.org/viaf/316734806|2viaf
-.034.   |dW0055846|eW0055846|fN0425318|gN0425318|2ngn
-.040.   |aSpMaBN|bspa|cSpMaBN|erdc|fembne
-.042.   |a200310291444PCMPBC  BNEP 00
-.080.   |a(460.181 Abelgas de Luna)|2mrf12
-.151.   |aAbelgas de Luna
-.451.   |aAbelgas de Luna (Entidad local menor)
-.551.   |wg|aSena de Luna
-.551.   |OTRA COSA
-.670.   |aELE|b(Abelgas de Luna)
-.670.   |aNGN|b(Abelgas de Luna)
-.781.   |zEspaña|zCastilla y León|zLeón (Provincia)|zSena de Luna|zAbelgas de Luna
-.856.   |uhttps://maps.google.es/maps?q=W005+58'46''N042+53'18'''''
+'''
+DEPRECATED SINCE 8-3-2023:
+'''
+# def dollar_parser(subfields: str) -> tuple:
+#     '''
+#     |a2010|22020 -> 2010 2020
+#     Every string should be in explicit-mode (starting with |)
+#     '''
+#     for i, text in enumerate(subfields[5:]):
+#         dollars = re.findall(re_dollar, text)
+#         dollars = map(lambda dollar: dollar.replace("|", ""), dollars)
+#         dollar_texts = re.split(re_dollar, text)[1:]
+#         subfields[i + 5] = tuple(zip(dollars, dollar_texts))
 
-n2 ='''.000. |az n 0cza
-.001. |aXX458594
-.003. |aSpMaBN
-.005. |a20180716090104.2
-.008. |a990927 n anznnbabn          |a ana    ##
-.010.   |aXX458594
-.016.   |aBNE19999847525
-.024. 7 |ahttp://viaf.org/viaf/316734302|2viaf
-.024. 7 |ahttps://www.wikidata.org/wiki/Q26000764|2wikidata
-.034.   |dW0013820|eW0013820|fN0425624|gN0425624|2ngn
-.040.   |aSpMaBN|bspa|cSpMaBN|erdc|fembne
-.042.   |a20120320
-.080.   |a(460.16 Ripa)|22015
-.151.   |aRipa
-.451.   |aErripa
-.451.   |aRipa/Erripa
-.451.   |aRipa (Entidad local menor)
-.551.   |wg|aOdieta
-.670.   |aNGN|b(Ripa/Erripa)
-.670.   |aINEBASE. Nomenclátor|b(Ripa)
-.781.   |zEspaña|zNavarra (Comunidad Autónoma)|zOdieta|zRipa
-.856.   |uhttps://maps.google.es/maps?q=W001+38'20''N042+56'24'''''
+'''
+DEPRECATED SINCE 7-3-2023:
+'''
 
-def dollar_parser(subfields: str) -> tuple:
-    for i, text in enumerate(subfields[5:]):
-        dollars = re.findall(re_dollar, text)
-        dollars = map(lambda dollar: dollar.replace("|", ""), dollars)
-        dollar_texts = re.split(re_dollar, text)[1:]
-        subfields[i + 5] = tuple(zip(dollars, dollar_texts))
+# def dict_mapper(record: str) -> dict:
+#     tags = list(map(lambda tag: f"{tag[1:4]}:", re.findall(re_tag, record)))
+#     tag_coincidence = 0
+#     for i, tag in enumerate(tags):
+#         if tags[i-1][0:4] == tag:
+#             tag_coincidence += 1
+#             tags[i] += f"{tag_coincidence}"
+#         else:
+#             tag_coincidence = 0
 
-def dict_mapper(record: str) -> dict:
-    tags = list(map(lambda tag: f"{tag[1:4]}:", re.findall(re_tag, record)))
-    tag_coincidence = 0
-    for i, tag in enumerate(tags):
-        if tags[i-1][0:4] == tag:
-            tag_coincidence += 1
-            tags[i] += f"{tag_coincidence}"
-        else:
-            tag_coincidence = 0
-
-    texts = re.split(re_tag, record)[1:]
-    texts = map(lambda text:f"|{text}", texts)
-    # texts = map(lambda text:text.replace("\n",""), texts)
-    result = dict(zip(tags,texts))
-    return result
+#     texts = re.split(re_tag, record)[1:]
+#     texts = map(lambda text:f"|{text}", texts)
+#     # texts = map(lambda text:text.replace("\n",""), texts)
+#     result = dict(zip(tags,texts))
+#     return result
 
 def dict_mapper(record: str) -> dict:
     result = {}
@@ -86,11 +48,15 @@ def dict_mapper(record: str) -> dict:
             tag = f"{tag[0:3]}:{tag_coincidence}"
         else:
             tag_coincidence = 0
-        result[tag] = value
+        result[tag] = f"|{value}"
         old_tag = tag
     return result
 
 def dollar_replacer(subfield: str, replacer:str = " "):
+    '''
+    |a2010|22020 -> 2010 2020
+    Every string should be in explicit-mode (starting with |)
+    '''
     try:
         return re.sub(re_dollar, replacer, subfield).strip()
     except TypeError:
@@ -128,6 +94,4 @@ def csv_mapper(record: dict) -> tuple:
     return tuple([bne_id, other_codes, coord, cdu, header_geo, not_accepted_term, related_geo_term])
 
 if __name__ == "__main__":
-    a = dict_mapper(n2)
-    # print(a)
-    # print(csv_mapper({"001:": "a", "024:": "b","034:": "c"}))
+    pass
