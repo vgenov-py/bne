@@ -15,8 +15,18 @@
 4. Prueba satisfactoria esquematización de 1.5KK
 5. Consulta por valor en tag
 6. Filtrar por ausencia de etiqueta
-7. Funcionamiento correcto en diferentes tipos de registros (persona, geografico)
+7. Funcionamiento correcto en diferentes tipos de registros (persona, geográfico)
 
 ### 8-3-2023
 
 1. Selección de ficheros
+
+### 16-3-2023
+
+1. Enric. en 43307 registros de autoría
+* Todos los registros con $0 en la casilla 307 fueron enriquecidos con la casilla 781 de geográfico
+* Solicitud a catálogo
+2. Multi query funcionando correctamente
+3. Prueba no satisfactoria realizada en obras (3.5KK, 3.5GB)
+* Si bien los registros pueden ser esquematizados, la subida es lenta
+* Se invesitgará multi-procesamiento

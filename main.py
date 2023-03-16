@@ -21,7 +21,7 @@ def sub_menu(options: list) -> None:
 
 def menu():
     clear()
-    options = ["Cargar ficheros/s", "MARC Query", "Consulta general", "Salir"]
+    options = ["Cargar ficheros/s", "MARC Query", "Consulta general","Exportar" , "Salir (Q)"]
     sub_menu(options)
 
 def list_files(dir: str) -> None:
@@ -88,6 +88,7 @@ while user != "q":
             if user.lower() == "s":
                 csv_name = input("Nombre del fichero: ")
                 test.export_csv(csv_name, result)
+                QMO(result).export_json(csv_name)
         elif user == "3":
             clear()
             # 1. set query
@@ -122,7 +123,20 @@ while user != "q":
             match_tag = input(": ")
             reply_set = reply_set.filter_by_values(match_tag, query_values)
             print(reply_set)
-
+            # 6. export json
+            clear()
+            print("¿Exportar en json (s/n)?")
+            user = input(": ")
+            if user.lower() == "s":
+                file_name = input("Nombre del fichero: ")
+                reply_set = QMO(reply_set)
+                reply_set.export_json(file_name)
+    elif user == "4":
+        sub_menu(("JSON", "CSV"))
+        user = input(": ")
+        if user == "1":
+            file_name = input("Nombre del fichero: ")
+            test.export_json(file_name)
 
 
     user = input(": ")

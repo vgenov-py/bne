@@ -2,54 +2,53 @@ import re
 
 re_tag = "\.\d{3}\.\W{1,3}\||\.\d{3}\.\W{1}\d{1,2}\W{1}\||\.\d{3}\.\d{1,2}\W{1,2}\|"
 re_dollar = "\|.{1}"
-'''
-DEPRECATED SINCE 8-3-2023:
-'''
-# def dollar_parser(subfields: str) -> tuple:
-#     '''
-#     |a2010|22020 -> 2010 2020
-#     Every string should be in explicit-mode (starting with |)
-#     '''
-#     for i, text in enumerate(subfields[5:]):
-#         dollars = re.findall(re_dollar, text)
-#         dollars = map(lambda dollar: dollar.replace("|", ""), dollars)
-#         dollar_texts = re.split(re_dollar, text)[1:]
-#         subfields[i + 5] = tuple(zip(dollars, dollar_texts))
-
-'''
-DEPRECATED SINCE 7-3-2023:
-'''
-
-# def dict_mapper(record: str) -> dict:
-#     tags = list(map(lambda tag: f"{tag[1:4]}:", re.findall(re_tag, record)))
-#     tag_coincidence = 0
-#     for i, tag in enumerate(tags):
-#         if tags[i-1][0:4] == tag:
-#             tag_coincidence += 1
-#             tags[i] += f"{tag_coincidence}"
-#         else:
-#             tag_coincidence = 0
-
-#     texts = re.split(re_tag, record)[1:]
-#     texts = map(lambda text:f"|{text}", texts)
-#     # texts = map(lambda text:text.replace("\n",""), texts)
-#     result = dict(zip(tags,texts))
-#     return result
 
 def dict_mapper(record: str) -> dict:
     result = {}
     tag_coincidence = 0
     old_tag = None
-    for line in re.split("\n(?=\.\d{3}\.)", record):
-        tag, value = line.split("|", 1)
-        tag = f"{tag[1:4]}:"
-        if old_tag == tag:
-            tag_coincidence += 1
-            tag = f"{tag[0:3]}:{tag_coincidence}"
-        else:
-            tag_coincidence = 0
-        result[tag] = f"|{value}"
-        old_tag = tag
+    try:
+        for line in re.split("\n(?=\.\d{3}\.)", record):
+            tag, value = line.split("|", 1)
+            tag = f"{tag[1:4]}:"
+            if old_tag == tag:
+                tag_coincidence += 1
+                tag = f"{tag[0:3]}:{tag_coincidence}"
+            else:
+                tag_coincidence = 0
+            result[tag] = f"|{value}"
+            old_tag = tag
+        return result
+    except Exception as e:
+        pass
+
+def dict_mapper(record: str) -> dict:
+    result = {}
+    # for i,s in enumerate(record):
+    #     if s == ".":
+    #         try:
+    #             tag = f"{record[i]}{record[i+1]}{record[i+2]}{record[i+3]}{record[i+4]}"
+    #             if re.search("\.\d{3}\.", tag):
+    #                 value = re.split("\.\d{3}\.", record[i+5:], 1)
+    #                 if len(value) >= 1:
+    #                     result[tag] = value[0]
+    #         except Exception as e:
+    #             pass
+    tag = record[1:4]
+    def r_tag_v(record: str):
+        value = re.search("\.\d{3}\.", record)
+        tag = record[value.start():value.end()]
+        record = record[value.end():]
+        if value:
+            value = re.search("\.\d{3}\.", record) 
+            result[tag] = record[4:value.start()]
+            tag = record[value.start():value.end()]
+            record = record[value.end():]
+        if len(record) >= 1:
+            r_tag_v(record)
+    r_tag_v(record)
+    # print(value)
+    # print(tag)
     return result
 
 def dollar_replacer(subfield: str, replacer:str = " "):
@@ -94,4 +93,26 @@ def csv_mapper(record: dict) -> tuple:
     return tuple([bne_id, other_codes, coord, cdu, header_geo, not_accepted_term, related_geo_term])
 
 if __name__ == "__main__":
-    pass
+    a = dict_mapper('''.000. |az n 0cza
+.001. |aXX102734
+.003. |aSpMaBN
+.005. |a20160615000000.4
+.008. |a950120 n aiznnbabn          |a ana
+.010.   |aXX102734
+.016.   |aBNE19950048978
+.024. 7 |ahttp://id.loc.gov/authorities/names/n96077394|2lcnaf
+.024. 7 |ahttp://viaf.org/viaf/315538112|2viaf
+.034.   |dE0020143|eE0020143|fN0412156|gN0412156|2geonames
+.040.   |aSpMaBN|bspa|cSpMaBN|erdc|fembne
+.042.   |a20141021
+.080.   |a(460.235-21 Santa Coloma de Cervelló)|22015
+.151.   |aCòlonia Güell (Santa Coloma de Cervelló)
+.550.   |aBarrios|zSanta Coloma de Cervelló
+.670.   |aLCSH|b[Colònia Güell S.A. (Santa Coloma de Cervelló, Spain)]
+.670.   |aGeoNames|b(Còlonia Güell)
+.670.   |aWWW Còlonia Güell, 21-10-2014|b(Còlonia Güell, Santa Coloma de
+Cervelló. La Colonia Güell se inició en el año 1.890 a iniciativa del
+empresario Eusebi Güell en su finca Can Soler de la Torre, situada en el
+término municipal de Santa Coloma de Cervelló, actual Comarca del Baix\nLlobregat)|uhttp://www.gaudicoloniaguell.org/
+''')
+    print(a)

@@ -1,6 +1,9 @@
 import re
 import csv
 from utils import csv_mapper
+import json
+from uuid import uuid4
+from tqdm import tqdm
 
 class QMO:
     def __init__(self, data: tuple, file_name=None) -> None:
@@ -19,7 +22,7 @@ class QMO:
     
     def filter_by_tag(self, tag:str, search_str: str) -> tuple:
         result = []
-        for record in self.data:
+        for record in tqdm(self.data):
             for k, v in record.items():
                 if k.startswith(f"{tag}:"):
                     if v.lower().find(search_str.lower()) >= 0:
@@ -39,10 +42,13 @@ class QMO:
     
     def filter_by_values(self, match_tag: str, values: tuple) -> tuple:
         result = []
-        for record in self.data:
-            reply_value = record.get(f"{match_tag}:")
-            if len(tuple(filter(lambda value: value in reply_value, values))):
-                result.append(record)
+        for record in tqdm(self.data):
+            try:
+                reply_value = record.get(f"{match_tag}:")
+                if len(tuple(filter(lambda value: value in reply_value, values))):
+                    result.append(record)
+            except Exception as e:
+                pass
         return tuple(result)
 
     def export_csv(self, csv_name: str, data: tuple):
@@ -56,6 +62,18 @@ class QMO:
             b = write_lines(data)
             csv_writter.writerows(b)
 
+    def export_json(self, file_name: str) -> None:
+        '''
+        json_name: file_name, do not add extension .json
+        '''
+        with open(f"{file_name}.json", "w", encoding="utf-8") as file:
+            json_str = json.dumps(self.data)
+            json_str.replace("\n","")
+            to_write = {
+                "id": uuid4().hex,
+                "data": json.loads(json_str)
+            }
+            json.dump(to_write, file, ensure_ascii=False, indent=4)
     def __str__(self):
         return f"{self.file_name}"
     def __repr__(self):
