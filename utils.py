@@ -22,34 +22,34 @@ def dict_mapper(record: str) -> dict:
     except Exception as e:
         pass
 
-def dict_mapper(record: str) -> dict:
-    result = {}
-    # for i,s in enumerate(record):
-    #     if s == ".":
-    #         try:
-    #             tag = f"{record[i]}{record[i+1]}{record[i+2]}{record[i+3]}{record[i+4]}"
-    #             if re.search("\.\d{3}\.", tag):
-    #                 value = re.split("\.\d{3}\.", record[i+5:], 1)
-    #                 if len(value) >= 1:
-    #                     result[tag] = value[0]
-    #         except Exception as e:
-    #             pass
-    tag = record[1:4]
-    def r_tag_v(record: str):
-        value = re.search("\.\d{3}\.", record)
-        tag = record[value.start():value.end()]
-        record = record[value.end():]
-        if value:
-            value = re.search("\.\d{3}\.", record) 
-            result[tag] = record[4:value.start()]
-            tag = record[value.start():value.end()]
-            record = record[value.end():]
-        if len(record) >= 1:
-            r_tag_v(record)
-    r_tag_v(record)
-    # print(value)
-    # print(tag)
-    return result
+# def dict_mapper(record: str) -> dict:
+#     result = {}
+#     # for i,s in enumerate(record):
+#     #     if s == ".":
+#     #         try:
+#     #             tag = f"{record[i]}{record[i+1]}{record[i+2]}{record[i+3]}{record[i+4]}"
+#     #             if re.search("\.\d{3}\.", tag):
+#     #                 value = re.split("\.\d{3}\.", record[i+5:], 1)
+#     #                 if len(value) >= 1:
+#     #                     result[tag] = value[0]
+#     #         except Exception as e:
+#     #             pass
+#     tag = record[1:4]
+#     def r_tag_v(record: str):
+#         value = re.search("\.\d{3}\.", record)
+#         tag = record[value.start():value.end()]
+#         record = record[value.end():]
+#         if value:
+#             value = re.search("\.\d{3}\.", record) 
+#             result[tag] = record[4:value.start()]
+#             tag = record[value.start():value.end()]
+#             record = record[value.end():]
+#         if len(record) >= 1:
+#             r_tag_v(record)
+#     r_tag_v(record)
+#     # print(value)
+#     # print(tag)
+#     return result
 
 def dollar_replacer(subfield: str, replacer:str = " "):
     '''

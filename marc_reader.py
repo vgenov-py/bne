@@ -18,8 +18,8 @@ def parse_file(file_name: str):
         elif file_name.find(".json") >= 0:
             data = json.loads(data)["data"]
             return QMO(data, file_name.split("/")[-1])
-        # data = tuple(map(lambda record: dict_mapper(record), tqdm(data)))
-    # return QMO(data, file_name.split("/")[-1])
+        data = tuple(map(lambda record: dict_mapper(record), tqdm(data)))
+    return QMO(data, file_name.split("/")[-1])
 
 if __name__ == "__main__":
     import os

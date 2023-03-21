@@ -41,15 +41,19 @@ class QMO:
         return tuple(get_values_by_tag())
     
     def filter_by_values(self, match_tag: str, values: tuple) -> tuple:
-        result = []
-        for record in tqdm(self.data):
-            try:
-                reply_value = record.get(f"{match_tag}:")
-                if len(tuple(filter(lambda value: value in reply_value, values))):
-                    result.append(record)
-            except Exception as e:
-                pass
-        return tuple(result)
+        # result = []
+        def gen_values():
+            for record in tqdm(self.data):
+                try:
+                    reply_value = record.get(f"{match_tag}:")
+                    # if len(tuple(filter(lambda value: value in reply_value, values))):
+                    #     result.append(record)
+                    for value in values:
+                        if value in reply_value:
+                            yield record
+                except Exception as e:
+                    pass
+        return tuple(gen_values())
 
     def export_csv(self, csv_name: str, data: tuple):
         HEADERS = ['id BNE', 'otros códigos de identificación', 'coordenadas', 'cdu', 'encabezamiento geográfico', 'término geográfico no aceptado', 'entidades relacionadas', 'término de materia relacionado', 'término geográfico relacionado', 'término geográfico relacionado genérico', 'término geográfico relacionado específico', 'nota general', 'fuente de información', 'información encontrada', 'enlace a fuente', 'otros datos biográficos o históricos', 'nota de uso', 'geográfico subencabezamiento', 'obras relacionadas']
