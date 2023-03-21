@@ -21,7 +21,7 @@
 
 1. Selección de ficheros
 
-### 16-3-2023
+### 16-3-2023
 
 1. Enric. en 43307 registros de autoría
 * Todos los registros con $0 en la casilla 307 fueron enriquecidos con la casilla 781 de geográfico
