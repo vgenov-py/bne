@@ -11,9 +11,6 @@ per = "records/persona.txt"
 #         # data = re.split("\*\*\* DOCUMENT BOUNDARY \*\*\*\nFORM=\w{1,}\n", data)[1:]
 #     return data
 
-# start = time.perf_counter()
-# data = parse_file(per)
-# finish = time.perf_counter()
 
 # def tag_mapper(line: str):
 #     if line.find("DOCUMENT") >= 0:
